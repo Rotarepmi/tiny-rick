@@ -1,0 +1,19 @@
+<template>
+  <section class="comments">
+    <form class="comments__form">
+      <textarea placeholder="Your comment here"></textarea>
+      <div class="comments__bar">
+        <input type="text" placeholder="Username">
+        <button type="submit">
+          <!-- Plus Icon -->
+        </button>
+      </div>
+    </form>
+
+    <!-- Comment Items -->
+  </section>
+</template>
+
+<script>
+export default {};
+</script>
