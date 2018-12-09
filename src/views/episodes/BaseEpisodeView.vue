@@ -2,18 +2,25 @@
   <div>
     <h1>Episode</h1>
 
-    <a href="/" class="go-back-link">
+    <router-link to="/" class="go-back-link">
       <arrow-icon/>Search results
-    </a>
+    </router-link>
 
     <div class="episode__content">
       <div class="episode__left-col">
-        <base-episode-item extra/>
+        <base-episode-item v-if="episode" :episode="episode" extra/>
 
         <h2>Characters</h2>
 
         <div class="characters-list">
-          <!-- Character Items -->
+          <base-item
+            v-for="character in characters"
+            :key="character.id"
+            :image="character.image"
+            :name="character.name"
+            :subtitle="`${character.species} from ${character.origin.name}`"
+            :content="character.content"
+          />
           <div class="link-container">
             <button class="primary-link is-big">Show more</button>
           </div>
@@ -22,7 +29,7 @@
 
       <div class="episode__right-col">
         <h2>Comments</h2>
-        <!-- Comments -->
+        <base-comments-wrapper :comments="comments"/>
       </div>
     </div>
   </div>
@@ -30,13 +37,46 @@
 
 <script>
 import ArrowIcon from "@/assets/icon-arrow-left.svg";
+import axios from "axios";
 import BaseEpisodeItem from "@/components/episodes/BaseEpisodeItem";
+import BaseItem from "@/components/BaseItem";
+import BaseCommentsWrapper from "@/components/comments/BaseCommentsWrapper";
+import { fetchEpisode } from "@/api/episodesApi";
+import { fetchComments } from "@/api/commentsApi";
 
 export default {
   name: "BaseEpisodeView",
   components: {
     ArrowIcon,
-    BaseEpisodeItem
+    BaseEpisodeItem,
+    BaseCommentsWrapper,
+    BaseItem
+  },
+  data() {
+    return {
+      episode: null,
+      characters: [],
+      comments: []
+    };
+  },
+  mounted() {
+    this.loadEpisode();
+  },
+  methods: {
+    async loadEpisode() {
+      const response = await fetchEpisode(this.$route.params.id);
+      this.episode = response.data;
+      response.data.characters.forEach(char => this.loadCharacter(char));
+      this.loadComments();
+    },
+    async loadCharacter(charLink) {
+      const response = await axios.get(charLink);
+      this.characters.push(response.data);
+    },
+    async loadComments() {
+      const response = await fetchComments(this.$route.params.id);
+      this.comments = response.data.results;
+    }
   }
 };
 </script>
