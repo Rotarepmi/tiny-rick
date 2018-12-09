@@ -28,18 +28,23 @@ export default new Vuex.Store({
   },
   actions: {
     async loadEpisodes({ commit, state }) {
-      const { episodes, currentPage, search } = state;
-      let newCurrentPage = currentPage + 1;
+      try {
+        const { episodes, currentPage, search } = state;
+        let newCurrentPage = currentPage + 1;
 
-      commit('setCurrentPage', newCurrentPage);
+        commit('setCurrentPage', newCurrentPage);
 
-      const response = await fetchEpisodes(newCurrentPage, search);
-      const eps = search.length
-        ? response.data.results
-        : [...episodes, ...response.data.results];
-      
-      commit('setEpisodes', eps);
-      commit('setInfo', response.data.info);
+        const response = await fetchEpisodes(newCurrentPage, search);
+        const eps = search.length
+          ? response.data.results
+          : [...episodes, ...response.data.results];
+
+        commit('setEpisodes', eps);
+        commit('setInfo', response.data.info);
+      }
+      catch (err) {
+        console.log(err);
+      }
     },
     searchEpisodes({ commit }, params) {
       commit('setSearchValue', params);
