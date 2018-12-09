@@ -16,11 +16,14 @@
           <base-item
             v-for="character in (isShowingMore ? characters : characters.slice(0, 5))"
             :key="character.id"
-            :image="character.image"
             :name="character.name"
             :subtitle="`${character.species} from ${character.origin.name}`"
             :content="character.content"
-          />
+          >
+            <template slot="image">
+              <img :src="character.image" class="base-item__img">
+            </template>
+          </base-item>
           <div class="link-container">
             <button class="primary-link is-big" @click.prevent="showMore()">
               <span v-if="isShowingMore">Show less</span>

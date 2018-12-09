@@ -15,8 +15,11 @@
       :key="comment.id"
       :name="comment.author"
       :subtitle="computeData(comment.created)"
-      :content="comment.content"
-    />
+    >
+      <template slot="content">
+        <p class="base-item__content">{{ comment.content }}}</p>
+      </template>
+    </base-item>
   </section>
 </template>
 
