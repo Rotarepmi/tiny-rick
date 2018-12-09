@@ -8,21 +8,19 @@
         <input v-model="search" @input="searchEpisodes" type="text" placeholder="Search">
       </div>
 
-      <ul class="episodes__list">
-        <li v-for="episode in episodes" :key="episode.id">
-          <base-episode-item :episode="episode"/>
-        </li>
-      </ul>
-
-      <div class="episodes__loader" v-if="!isBusy">Loading more</div>
+      <the-episodes-list v-if="episodes.length" :episodes="episodes"/>
+      <load-icon class="episodes__loader-icon" v-else-if="isBusy"/>
+      <load-icon class="episodes__loader-icon" v-if="!isBusy"/>
     </div>
   </section>
 </template>
 
 <script>
 import SearchIcon from "@/assets/icon-search.svg";
+import LoadIcon from "@/assets/icon-loading.svg";
 import BaseEpisodeItem from "@/components/episodes/BaseEpisodeItem";
-import fetchEpisodes from "@/api/fetchEpisodes";
+import TheEpisodesList from "@/components/episodes/TheEpisodesList";
+import { fetchEpisodes } from "@/api/episodesApi";
 import debounce from "lodash.debounce";
 
 export default {
@@ -38,7 +36,9 @@ export default {
   },
   components: {
     SearchIcon,
-    BaseEpisodeItem
+    LoadIcon,
+    BaseEpisodeItem,
+    TheEpisodesList
   },
   mounted() {},
   methods: {
@@ -70,3 +70,13 @@ export default {
   }
 };
 </script>
+
+<style>
+.episodes__loader-icon {
+  display: block;
+  width: 50px;
+  height: 50px;
+  margin: 0 auto 50px auto;
+}
+</style>
+
