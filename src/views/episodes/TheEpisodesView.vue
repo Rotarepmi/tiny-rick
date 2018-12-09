@@ -5,7 +5,7 @@
 
       <div class="episodes__search">
         <search-icon/>
-        <input v-model="search" @input="searchEpisodes" type="text" placeholder="Search">
+        <input @input="searchEpisodes($event.target.value)" type="text" placeholder="Search">
       </div>
 
       <the-episodes-list v-if="episodes.length" :episodes="episodes"/>
@@ -25,15 +25,6 @@ import debounce from "lodash.debounce";
 
 export default {
   name: "TheEpisodesView",
-  data() {
-    return {
-      episodes: [],
-      currentPage: 0,
-      name: "",
-      info: {},
-      search: ""
-    };
-  },
   components: {
     SearchIcon,
     LoadIcon,
@@ -43,27 +34,22 @@ export default {
   mounted() {},
   methods: {
     loadEpisodes: debounce(function() {
-      this.currentPage += 1;
-
-      fetchEpisodes(this.currentPage, this.search)
-        .then(response => {
-          this.episodes = !!this.search.length
-            ? response.data.results
-            : [...this.episodes, ...response.data.results];
-          this.info = response.data.info;
-        })
-        .catch(err => {
-          this.episodes = [];
-          console.log(err);
-        });
+      this.$store.dispatch("loadEpisodes");
     }, 400),
-    searchEpisodes() {
-      this.episodes = [];
-      this.currentPage = 0;
-      this.loadEpisodes();
-    }
+    searchEpisodes: debounce(function(text) {
+      this.$store.dispatch("searchEpisodes", text);
+    }, 400)
   },
   computed: {
+    info() {
+      return this.$store.state.info;
+    },
+    currentPage() {
+      return this.$store.state.currentPage;
+    },
+    episodes() {
+      return this.$store.state.episodes;
+    },
     isBusy() {
       return this.currentPage >= this.info.pages;
     }
