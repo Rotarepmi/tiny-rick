@@ -14,7 +14,7 @@
 
         <div class="characters-list">
           <base-item
-            v-for="character in characters"
+            v-for="character in (isShowingMore ? characters : characters.slice(0, 5))"
             :key="character.id"
             :image="character.image"
             :name="character.name"
@@ -22,7 +22,10 @@
             :content="character.content"
           />
           <div class="link-container">
-            <button class="primary-link is-big">Show more</button>
+            <button class="primary-link is-big" @click.prevent="showMore()">
+              <span v-if="isShowingMore">Show less</span>
+              <span v-else>Show more</span>
+            </button>
           </div>
         </div>
       </div>
@@ -56,7 +59,8 @@ export default {
     return {
       episode: null,
       characters: [],
-      comments: []
+      comments: [],
+      isShowingMore: false
     };
   },
   mounted() {
@@ -76,6 +80,9 @@ export default {
     async loadComments() {
       const response = await fetchComments(this.$route.params.id);
       this.comments = response.data.results;
+    },
+    showMore() {
+      this.isShowingMore = !this.isShowingMore;
     }
   }
 };
