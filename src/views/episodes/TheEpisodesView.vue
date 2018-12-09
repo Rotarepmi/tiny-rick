@@ -63,6 +63,16 @@ export default {
   width: 50px;
   height: 50px;
   margin: 0 auto 50px auto;
+  animation: spin linear infinite 0.5s;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 </style>
 
